@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-gc = gspread.service_account(filename="/app/gcp_key.json")
+gc = gspread.service_account(filename="gcp_key.json")
 
 sh = gc.open(os.environ.get("SPREAD_NAME"))
 worksheet = sh.worksheet(os.environ.get("SPREAD_WORKSHEET"))
