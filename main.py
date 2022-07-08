@@ -15,7 +15,14 @@ load_dotenv()
 updater = Updater(os.environ.get("BOTFATHER_TOKEN"), use_context=True)
 
 introduction = """
-Get the hell out of here!
+olá! bot do pedroka aqui.
+
+minha função é ajudar ele a entender o consumo de sua moto. Estes são meus comandos:
+
+/start - reenvia esta mensagem
+/help - reenvia esta mensagem
+/register - recebe três parâmetros (valor: float, litros: float, km: int) e atualiza uma spreadsheet com eles
+/amanda - surpresinha!
     """
 
 
@@ -30,17 +37,21 @@ def help(update: Update, context: CallbackContext):
 def register(update: Update, context: CallbackContext):
     update.message.reply_text(
         f"""
-Parâmetros recebidos!
-Valor (em R$): {context.args[0]}
-Litros abastecidos: {context.args[1]}
-KM atual: {context.args[2]}
+parâmetros recebidos!
+valor: {context.args[0]}
+litros: {context.args[1]}
+km: {context.args[2]}
     """
     )
     try:
         update_spreadsheet(context.args[0], context.args[1], context.args[2])
-        update.message.reply_text("Planilha atualizada!")
+        update.message.reply_text("deu certo! planilha atualizada")
     except Exception as e:
-        update.message.reply_text(f"Algo de errado rolou. Erro: {e}")
+        update.message.reply_text(f"algo de errado rolou. erro: {e}")
+
+
+def amanda(update: Update, context: CallbackContext):
+    update.message.reply_text("fala português, alienígena filho da puta")
 
 
 def unknown_text(update: Update, context: CallbackContext):
@@ -58,6 +69,7 @@ def unknown(update: Update, context: CallbackContext):
 updater.dispatcher.add_handler(CommandHandler("start", start))
 updater.dispatcher.add_handler(CommandHandler("help", help))
 updater.dispatcher.add_handler(CommandHandler("register", register))
+updater.dispatcher.add_handler(CommandHandler("amanda", amanda))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
 updater.dispatcher.add_handler(
     MessageHandler(
