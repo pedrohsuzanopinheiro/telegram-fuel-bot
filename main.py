@@ -1,18 +1,18 @@
 import os
 
 from dotenv import load_dotenv
-from telegram.ext.bot import bot
 from telegram.ext.callbackcontext import CallbackContext
 from telegram.ext.commandhandler import CommandHandler
 from telegram.ext.filters import Filters
 from telegram.ext.messagehandler import MessageHandler
+from telegram.ext.updater import Updater
 from telegram.update import Update
 
 from spreadsheet import update_spreadsheet
 
 load_dotenv()
 
-bot = bot(os.environ.get("BOTFATHER_TOKEN"), use_context=True)
+updater = Updater(os.environ.get("BOTFATHER_TOKEN"), use_context=True)
 
 introduction = """
 olá! bot do pedroka aqui.
@@ -23,7 +23,7 @@ minha função é ajudar ele a entender o consumo de sua moto. estes são meus c
 /help - reenvia esta mensagem
 /register - recebe três parâmetros (valor: float, litros: float, km: int) e atualiza uma spreadsheet com eles
 /amanda - surpresinha!
-    """
+"""
 
 
 def start(update: Update, context: CallbackContext):
@@ -66,12 +66,12 @@ def unknown(update: Update, context: CallbackContext):
     )
 
 
-bot.dispatcher.add_handler(CommandHandler("start", start))
-bot.dispatcher.add_handler(CommandHandler("help", help))
-bot.dispatcher.add_handler(CommandHandler("register", register))
-bot.dispatcher.add_handler(CommandHandler("amanda", amanda))
-bot.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
-bot.dispatcher.add_handler(
+updater.dispatcher.add_handler(CommandHandler("start", start))
+updater.dispatcher.add_handler(CommandHandler("help", help))
+updater.dispatcher.add_handler(CommandHandler("register", register))
+updater.dispatcher.add_handler(CommandHandler("amanda", amanda))
+updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
+updater.dispatcher.add_handler(
     MessageHandler(
         # Filters out unknown commands
         Filters.command,
@@ -80,6 +80,6 @@ bot.dispatcher.add_handler(
 )
 
 # Filters out unknown messages.
-bot.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
+updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
 
-bot.start_polling()
+updater.start_polling()
