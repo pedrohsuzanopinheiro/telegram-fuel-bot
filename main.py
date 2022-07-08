@@ -1,23 +1,23 @@
 import os
 
 from dotenv import load_dotenv
+from telegram.ext.bot import bot
 from telegram.ext.callbackcontext import CallbackContext
 from telegram.ext.commandhandler import CommandHandler
 from telegram.ext.filters import Filters
 from telegram.ext.messagehandler import MessageHandler
-from telegram.ext.updater import Updater
 from telegram.update import Update
 
 from spreadsheet import update_spreadsheet
 
 load_dotenv()
 
-updater = Updater(os.environ.get("BOTFATHER_TOKEN"), use_context=True)
+bot = bot(os.environ.get("BOTFATHER_TOKEN"), use_context=True)
 
 introduction = """
 olá! bot do pedroka aqui.
 
-minha função é ajudar ele a entender o consumo de sua moto. Estes são meus comandos:
+minha função é ajudar ele a entender o consumo de sua moto. estes são meus comandos:
 
 /start - reenvia esta mensagem
 /help - reenvia esta mensagem
@@ -66,12 +66,12 @@ def unknown(update: Update, context: CallbackContext):
     )
 
 
-updater.dispatcher.add_handler(CommandHandler("start", start))
-updater.dispatcher.add_handler(CommandHandler("help", help))
-updater.dispatcher.add_handler(CommandHandler("register", register))
-updater.dispatcher.add_handler(CommandHandler("amanda", amanda))
-updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
-updater.dispatcher.add_handler(
+bot.dispatcher.add_handler(CommandHandler("start", start))
+bot.dispatcher.add_handler(CommandHandler("help", help))
+bot.dispatcher.add_handler(CommandHandler("register", register))
+bot.dispatcher.add_handler(CommandHandler("amanda", amanda))
+bot.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
+bot.dispatcher.add_handler(
     MessageHandler(
         # Filters out unknown commands
         Filters.command,
@@ -80,6 +80,6 @@ updater.dispatcher.add_handler(
 )
 
 # Filters out unknown messages.
-updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
+bot.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
 
-updater.start_polling()
+bot.start_polling()
